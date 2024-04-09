@@ -2,6 +2,10 @@
 import {RouterLink} from 'vue-router'
 import { useGetData } from "@/composables/getData";
 
+import { useCounterStore } from "@/store/counter"
+
+const useCounter = useCounterStore()
+
 const {data, getData, loading, error} = useGetData();
 
 getData('https://pokeapi.co/api/v2/pokemon');
