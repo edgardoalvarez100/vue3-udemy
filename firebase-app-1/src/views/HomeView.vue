@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Home</h1>
-        
+        {{ userData }}
     </div>
 </template>
 

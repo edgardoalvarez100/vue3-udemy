@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
@@ -12,6 +13,7 @@ export const useUserStore = defineStore("userStore", {
   state: () => ({
     userData: null,
     loadingUser: false,
+    loadingSession: false,
   }),
   actions: {
     async registerUser(email, password) {
@@ -57,6 +59,24 @@ export const useUserStore = defineStore("userStore", {
       } finally {
         this.loadingUser = false;
       }
+    },
+    currentUser() {
+      return new Promise((resolve, reject) => {
+        onAuthStateChanged(
+          auth,
+          (user) => {
+            if (user) {
+              this.userData = { email: user.email, uid: user.uid };
+            } else {
+              this.userData = null;
+            }
+            resolve(user);
+          },
+          (e) => reject(e)
+        );
+        // Según la documentación, la función onAuthStateChanged() devuelve
+        // La función de cancelación de suscripción para el observador
+      });
     },
   },
 });
