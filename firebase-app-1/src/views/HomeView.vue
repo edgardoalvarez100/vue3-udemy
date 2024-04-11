@@ -15,9 +15,9 @@
        </div>
        <ul v-else>
         <li v-for="item of datatabaseStore.documents" :key="item.id">
-        {{ item.id }} <br>
-        {{ item.name }} <br>
-        {{ item.short }} <br>
+        id: {{ item.id }} <br>
+        url: {{ item.name }} <br>
+        short: {{ item.short }} <br>
         </li>
        </ul>
        
