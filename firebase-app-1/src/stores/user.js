@@ -8,6 +8,7 @@ import {
 import router from "../router/";
 import { defineStore } from "pinia";
 import { auth } from "../firebaseConfig";
+import { useDatabaseStore } from "./database";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -49,6 +50,8 @@ export const useUserStore = defineStore("userStore", {
       }
     },
     async logoutUser() {
+      const databaseStore = useDatabaseStore();
+      databaseStore.$reset();
       this.loadingUser = true;
       try {
         await signOut(auth);
