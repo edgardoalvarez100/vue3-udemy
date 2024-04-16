@@ -12,15 +12,19 @@
 
         <div v-if="datatabaseStore.loadingDoc">
             Loading doc...
-       </div>
-       <ul v-else>
-        <li v-for="item of datatabaseStore.documents" :key="item.id">
-        id: {{ item.id }} <br>
-        url: {{ item.name }} <br>
-        short: {{ item.short }} <br>
-        </li>
-       </ul>
-       
+        </div>
+        <ul v-else>
+            <li v-for="item of datatabaseStore.documents" :key="item.id">
+                id: {{ item.id }} <br>
+                url: {{ item.name }} <br>
+                short: {{ item.short }} <br>
+
+                <button @click="datatabaseStore.deleteUrl(item.id)">Eliminar</button>
+                <button @click="router.push(`/editar/${item.id}`)">Editar</button>
+
+            </li>
+        </ul>
+
     </div>
 </template>
 
@@ -29,16 +33,19 @@ import { storeToRefs } from "pinia";
 import { useUserStore } from "../stores/user";
 import { useDatabaseStore } from "../stores/database";
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore();
 const datatabaseStore = useDatabaseStore();
-const {userData} = storeToRefs(userStore)
+const { userData } = storeToRefs(userStore)
+const router = useRouter()
 
 const url = ref('')
 
 datatabaseStore.getUrls()
 
-const handleSubmit = ()=>{
-datatabaseStore.addUrl(url.value);
+const handleSubmit = () => {
+    datatabaseStore.addUrl(url.value);
+    url.value = ''
 }
 </script>
