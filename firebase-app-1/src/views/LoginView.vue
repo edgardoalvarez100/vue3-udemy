@@ -5,7 +5,7 @@
     <form @submit.prevent="handleSubmit">
         <input type="email" v-model.trim="email" placeholder="Ingrese Email">
         <input type="password" v-model.trim="password" placeholder="Ingrese contreña">
-        <button type="submit" :disabled="userStore.loadingUser">Login</button>
+        <a-button type="primary" :disabled="userStore.loadingUser" html-type="submit">Login</a-button>
     </form>
 </template>
 
