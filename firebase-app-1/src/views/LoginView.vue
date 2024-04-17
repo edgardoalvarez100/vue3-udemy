@@ -3,12 +3,25 @@
     <a-row>
         <a-col :xs="{ span: 24 }" :sm="{ span: 12, offset: 6 }">
             <h1>
-                login
+                Login
             </h1>
-            <a-form @submit.prevent="handleSubmit" name="login">
-                <input type="email" v-model.trim="email" placeholder="Ingrese Email">
-                <input type="password" v-model.trim="password" placeholder="Ingrese contreña">
-                <a-button type="primary" :disabled="userStore.loadingUser" html-type="submit">Login</a-button>
+            <a-form name="login" layout="vertical" :model="formState" @finish="onFinish" @finishFailed="onFinishFailed">
+
+                <a-form-item name="email" label="Ingrese Email"
+                    :rules="[{ required: true, whitespace: true, type: 'email', message: 'Ingresa un correo valido' },]">
+                    <a-input v-model:value="formState.email" />
+                </a-form-item>
+
+                <a-form-item name="password" label="Ingrese Password"
+                    :rules="[{ required: true, whitespace: true, message: 'Requerido' }, { min: 6, message: 'Mínimo 6 caracteres' }]">
+                    <a-input-password v-model:value="formState.password" />
+                </a-form-item>
+
+
+                <a-form-item>
+                    <a-button type="primary" :disabled="userStore.loadingUser" html-type="submit">Login</a-button>
+                </a-form-item>
+
             </a-form>
         </a-col>
     </a-row>
@@ -16,17 +29,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import { useUserStore } from "../stores/user";
+import { message } from 'ant-design-vue'
 
 const userStore = useUserStore();
-const email = ref('')
-const password = ref('')
+const formState = reactive({ email: '', password: '' })
 
-const handleSubmit = async () => {
-    if (!email.value || password.value.length < 6) {
-        return alert("Llena los campos")
+
+const onFinish = async () => {
+    try {
+        await userStore.loginUser(formState.email, formState.password);
+    } catch (error) {
+        message.error(error.message)
     }
-    await userStore.loginUser(email.value, password.value);
 }
+
+const onFinishFailed = errorInfo => console.log('Failed', errorInfo)
+
+
 </script>

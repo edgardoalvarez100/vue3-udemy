@@ -13,17 +13,27 @@
         <div v-if="datatabaseStore.loadingDoc">
             Loading doc...
         </div>
-        <ul v-else>
-            <li v-for="item of datatabaseStore.documents" :key="item.id">
-                id: {{ item.id }} <br>
-                url: {{ item.name }} <br>
-                short: {{ item.short }} <br>
 
-                <button @click="datatabaseStore.deleteUrl(item.id)">Eliminar</button>
-                <button @click="router.push(`/editar/${item.id}`)">Editar</button>
+        <div style="background: #ececec; padding: 30px">
+            <a-row :gutter="18">
+                <a-col :md="{ span: '6' }" :xs="{ span: '24' }" v-for="item of datatabaseStore.documents"
+                    :key="item.id">
+                    <a-card :title="item.name" :bordered="false" style="width: 300px">
 
-            </li>
-        </ul>
+                        Url: {{ item.name }} <br>
+                        Short: {{ item.short }} <br><br>
+                        <a-space>
+                            <a-button type="primary" @click="router.push(`/editar/${item.id}`)">Editar</a-button>
+                            <a-button type="primary" danger
+                                @click="datatabaseStore.deleteUrl(item.id)">Eliminar</a-button>
+                        </a-space>
+
+                    </a-card>
+                </a-col>
+            </a-row>
+        </div>
+
+
 
     </div>
 </template>
