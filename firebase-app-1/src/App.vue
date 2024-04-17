@@ -1,23 +1,48 @@
 <template>
-  
-  <div >
-    <h1>APP</h1>
-    <nav v-if="!userStore.loadingSession">
-      <router-link to="/" v-if="userStore.userData">Home</router-link> |
-      <router-link to="/login" v-if="!userStore.userData">Login</router-link> |
-      <router-link to="/register" v-if="!userStore.userData">Register</router-link> | 
-      <button @click="userStore.logoutUser" v-if="userStore.userData">Logout</button>
-    </nav>
-    <div v-else>Loading session...</div>
-    <router-view ></router-view>
-  </div>
+
+  <a-layout>
+    <a-layout-header v-if="!userStore.loadingSession">
+
+      <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }" v-model:selectedKeys="selectedKeys">
+        <a-menu-item v-if="userStore.userData" key="home">
+          <router-link to="/">Home</router-link>
+        </a-menu-item>
+        <a-menu-item v-if="!userStore.userData" key="login">
+          <router-link to="/login">Login</router-link>
+        </a-menu-item>
+        <a-menu-item v-if="!userStore.userData" key="register">
+          <router-link to="/register">Register</router-link>
+        </a-menu-item>
+        <a-menu-item key="logout" @click="userStore.logoutUser" v-if="userStore.userData">
+          Logout
+        </a-menu-item>
+      </a-menu>
+    </a-layout-header>
+    <a-layout-content style="padding: 0 50px;">
+      <div :style="{ background: '#fff', padding: '24px', minHeight: '300px' }">
+        <div v-if="userStore.loadingSession">Loading Session....</div>
+        <router-view></router-view>
+      </div>
+      <a-layout-footer>
+
+      </a-layout-footer>
+    </a-layout-content>
+
+  </a-layout>
 </template>
 
 <script setup>
 import { RouterView } from 'vue-router';
 import { useUserStore } from './stores/user';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const userStore = useUserStore()
+const route = useRoute()
+const selectedKeys = ref([])
+
+watch(() => route.name, () => { selectedKeys.value = [route.name] })
+
+
 
 </script>
-

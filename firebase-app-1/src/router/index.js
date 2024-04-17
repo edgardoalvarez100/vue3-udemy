@@ -20,14 +20,24 @@ const routes = [
     path: "/",
     component: HomeView,
     beforeEnter: requireAuth,
+    name: "home",
   },
-  { path: "/login", component: () => import("../views/LoginView.vue") },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/LoginView.vue"),
+  },
   {
     path: "/editar/:id",
+    name: "editar",
     component: () => import("../views/EditarView.vue"),
     beforeEnter: requireAuth,
   },
-  { path: "/register", component: () => import("../views/RegisterView.vue") },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/RegisterView.vue"),
+  },
 ];
 
 const router = createRouter({
