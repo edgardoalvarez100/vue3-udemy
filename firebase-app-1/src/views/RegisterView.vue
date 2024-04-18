@@ -21,7 +21,7 @@
 
 
                 <a-form-item>
-                    <a-button type="primary" :disabled="userStore.loadingUser" html-type="submit">Login</a-button>
+                    <a-button type="primary" :loading="userStore.loadingUser" html-type="submit">Login</a-button>
                 </a-form-item>
 
             </a-form>

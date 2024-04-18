@@ -19,6 +19,7 @@ export const useDatabaseStore = defineStore("database", {
     return {
       documents: [],
       loadingDoc: false,
+      loading: false,
     };
   },
   actions: {
@@ -76,6 +77,7 @@ export const useDatabaseStore = defineStore("database", {
       }
     },
     async addUrl(name) {
+      this.loading = true;
       try {
         const obj = {
           name: name,
@@ -85,11 +87,13 @@ export const useDatabaseStore = defineStore("database", {
         const docRef = await addDoc(collection(db, "urls"), obj);
         this.documents.push({ ...obj, id: docRef.id });
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       } finally {
+        this.loading = false;
       }
     },
     async deleteUrl(id) {
+      this.loading = true;
       try {
         const docRef = doc(db, "urls", id);
 
@@ -103,8 +107,9 @@ export const useDatabaseStore = defineStore("database", {
         await deleteDoc(docRef);
         this.documents = this.documents.filter((item) => item.id !== id);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       } finally {
+        this.loading = false;
       }
     },
   },

@@ -3,11 +3,9 @@
         <h1>Home</h1>
         {{ userData?.email }}
 
+        <add-form></add-form>
 
-        <form @submit.prevent="handleSubmit">
-            <input type="text" v-model="url" placeholder="Ingrese Url">
-            <button type="submit">Agregar</button>
-        </form>
+
 
 
         <div v-if="datatabaseStore.loadingDoc">
@@ -15,20 +13,29 @@
         </div>
 
         <div style="background: #ececec; padding: 30px">
-            <a-row :gutter="18">
-                <a-col :md="{ span: '6' }" :xs="{ span: '24' }" v-for="item of datatabaseStore.documents"
+            <a-row :gutter="24">
+                <a-col :md="{ span: '12' }" :xs="{ span: '24' }" v-for="item of datatabaseStore.documents"
                     :key="item.id">
-                    <a-card :title="item.name" :bordered="false" style="width: 300px">
+                    <a-space direction="vertical" style="width: 100%">
+                        <a-card :title="item.short" :bordered="false">
+                            <template #extra>
+                                <a-space>
+                                    <a-button type="primary"
+                                        @click="router.push(`/editar/${item.id}`)">Editar</a-button>
+                                    <a-popconfirm title="Estas seguro que quieres eliminar la url?" ok-text="Si"
+                                        cancel-text="No" @confirm="confirm(item.id)" @cancel="cancel">
+                                        <a-button type="primary" danger>Eliminar</a-button>
+                                    </a-popconfirm>
 
-                        Url: {{ item.name }} <br>
-                        Short: {{ item.short }} <br><br>
-                        <a-space>
-                            <a-button type="primary" @click="router.push(`/editar/${item.id}`)">Editar</a-button>
-                            <a-button type="primary" danger
-                                @click="datatabaseStore.deleteUrl(item.id)">Eliminar</a-button>
-                        </a-space>
+                                </a-space>
+                            </template>
+                            <p>
+                                {{ item.name }} <br>
+                            </p>
 
-                    </a-card>
+                        </a-card>
+                    </a-space>
+
                 </a-col>
             </a-row>
         </div>
@@ -42,20 +49,28 @@
 import { storeToRefs } from "pinia";
 import { useUserStore } from "../stores/user";
 import { useDatabaseStore } from "../stores/database";
-import { ref } from 'vue';
 import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
 
 const userStore = useUserStore();
 const datatabaseStore = useDatabaseStore();
 const { userData } = storeToRefs(userStore)
 const router = useRouter()
 
-const url = ref('')
+const confirm = async (id) => {
+    try {
+        await datatabaseStore.deleteUrl(id)
+        message.success("Se eliminó la URL")
+    } catch (error) {
+        message.error(error.message)
+    }
+
+}
+const cancel = () => {
+    message.warning("Se canceló la elimación")
+}
 
 datatabaseStore.getUrls()
 
-const handleSubmit = () => {
-    datatabaseStore.addUrl(url.value);
-    url.value = ''
-}
+
 </script>
