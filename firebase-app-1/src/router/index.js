@@ -38,6 +38,12 @@ const routes = [
     name: "register",
     component: () => import("../views/RegisterView.vue"),
   },
+  {
+    path: "/perfil",
+    name: "perfil",
+    component: () => import("../views/PerfilView.vue"),
+    beforeEnter: requireAuth,
+  },
 ];
 
 const router = createRouter({

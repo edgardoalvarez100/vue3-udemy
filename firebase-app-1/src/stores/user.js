@@ -3,12 +3,14 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 
 import router from "../router/";
 import { defineStore } from "pinia";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { useDatabaseStore } from "./database";
+import { setDoc, getDoc, doc } from "firebase/firestore/lite";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -41,12 +43,29 @@ export const useUserStore = defineStore("userStore", {
           email,
           password
         );
-        this.userData = { email: user.email, uid: user.uid };
+        this.setUser(user);
+
         router.push("/");
       } catch (error) {
+        console.log(error);
         throw new Error(error);
       } finally {
         this.loadingUser = false;
+      }
+    },
+    async setUser(user) {
+      try {
+        const docRef = doc(db, "users", user.uid);
+        this.userData = {
+          email: user.email,
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        };
+
+        await setDoc(docRef, this.userData);
+      } catch (error) {
+        throw new Error(error);
       }
     },
     async logoutUser() {
@@ -54,9 +73,8 @@ export const useUserStore = defineStore("userStore", {
       databaseStore.$reset();
       this.loadingUser = true;
       try {
-        await signOut(auth);
-        this.userData = null;
         router.push("/login");
+        await signOut(auth);
       } catch (error) {
         throw new Error(error);
       } finally {
@@ -67,19 +85,34 @@ export const useUserStore = defineStore("userStore", {
       return new Promise((resolve, reject) => {
         onAuthStateChanged(
           auth,
-          (user) => {
+          async (user) => {
             if (user) {
-              this.userData = { email: user.email, uid: user.uid };
+              console.log(user);
+              // await this.setUser(user);
+              this.userData = {
+                email: user.email,
+                uid: user.uid,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+              };
             } else {
               this.userData = null;
+              const databaseStore = useDatabaseStore();
+              databaseStore.$reset();
             }
             resolve(user);
           },
           (e) => reject(e)
         );
-        // Según la documentación, la función onAuthStateChanged() devuelve
-        // La función de cancelación de suscripción para el observador
       });
+    },
+    async updateUser(displayName) {
+      try {
+        await updateProfile(auth.currentUser, { displayName });
+        this.setUser(auth.currentUser);
+      } catch (error) {
+        throw new Error(error);
+      }
     },
   },
 });
