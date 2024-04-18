@@ -52,7 +52,7 @@ export const useDatabaseStore = defineStore("database", {
         const docSnap = await getDoc(docRef);
         return docSnap.data().name;
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error);
       } finally {
         this.loadingDoc = false;
       }
@@ -73,7 +73,7 @@ export const useDatabaseStore = defineStore("database", {
         );
         router.push("/");
       } catch (error) {
-        console.log(error.message);
+        throw new Error(error);
       }
     },
     async addUrl(name) {
