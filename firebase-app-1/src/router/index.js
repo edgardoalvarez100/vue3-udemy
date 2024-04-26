@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "../stores/user";
+import { useDatabaseStore } from "../stores/database";
 import HomeView from "../views/HomeView.vue";
 
 const requireAuth = async (to, from, next) => {
@@ -13,6 +14,21 @@ const requireAuth = async (to, from, next) => {
     next("/login");
   }
   userStore.loadingSession = false;
+};
+
+const redireccion = async (to, from, next) => {
+  const userStore = useUserStore();
+  const databaseStore = useDatabaseStore();
+  userStore.loadingSession = true;
+  const url = await databaseStore.getUrl(to.params.pathMatch[0]);
+
+  if (!url) {
+    next();
+  } else {
+    window.location.href = url;
+    userStore.loadingSession = true;
+    next();
+  }
 };
 
 const routes = [
@@ -43,6 +59,12 @@ const routes = [
     name: "perfil",
     component: () => import("../views/PerfilView.vue"),
     beforeEnter: requireAuth,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "404",
+    component: () => import("../views/NotFound.vue"),
+    beforeEnter: redireccion,
   },
 ];
 

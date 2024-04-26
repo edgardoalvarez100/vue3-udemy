@@ -10,9 +10,10 @@
         </div>
 
         <a-space direction="vertical" style="width: 100%" v-if="!datatabaseStore.loadingDoc">
-            <a-card v-for="item of datatabaseStore.documents" :key="item.id" :title="item.short">
+            <a-card v-for="item of datatabaseStore.documents" :key="item.id" :title="`${item.short}`">
                 <template #extra>
                     <a-space>
+                        <a-button type="primary" @click="copiarPortapales(item.id)">Copiar</a-button>
                         <a-button type="primary" @click="router.push(`/editar/${item.id}`)">Editar</a-button>
                         <a-popconfirm title="Estas seguro que quieres eliminar la url?" ok-text="Si" cancel-text="No"
                             @confirm="confirm(item.id)" @cancel="cancel">
@@ -53,6 +54,16 @@ const confirm = async (id) => {
 }
 const cancel = () => {
     message.warning("Se canceló la elimación")
+}
+
+const copiarPortapales = (id) => {
+    if (!navigator.clipboard) {
+        return message.error("no se pudo copiar al portapeles")
+    }
+    const path = `${window.location.origin}/${id}`
+    navigator.clipboard.writeText(path).then(() => {
+        message.success("Url Copiada al portapapeles")
+    })
 }
 
 datatabaseStore.getUrls()
