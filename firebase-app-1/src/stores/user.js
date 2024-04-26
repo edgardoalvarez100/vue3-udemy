@@ -107,23 +107,23 @@ export const useUserStore = defineStore("userStore", {
         );
       });
     },
-    async updateImg(imagen) {
+
+    async updateUser(displayName, imagen) {
+      this.loadingUser = true;
       try {
-        const storageRef = ref(storage, `${this.userData.uid}/perfil`);
-        await uploadBytes(storageRef, imagen.originFileObj);
-        const url = await getDownloadURL(storageRef);
-        await updateProfile(auth.currentUser, { photoURL: url });
-        this.setUser(auth.currentUser);
-      } catch (error) {
-        throw new Error(error);
-      }
-    },
-    async updateUser(displayName) {
-      try {
+        if (imagen) {
+          const storageRef = ref(storage, `perfiles/${this.userData.uid}`);
+          await uploadBytes(storageRef, imagen.originFileObj);
+          const url = await getDownloadURL(storageRef);
+          await updateProfile(auth.currentUser, { photoURL: url });
+        }
+
         await updateProfile(auth.currentUser, { displayName });
         this.setUser(auth.currentUser);
       } catch (error) {
         throw new Error(error);
+      } finally {
+        this.loadingUser = false;
       }
     },
   },

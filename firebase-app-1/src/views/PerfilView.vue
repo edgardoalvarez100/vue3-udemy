@@ -49,7 +49,7 @@ import { UploadOutlined } from '@ant-design/icons-vue';
 
 const userStore = useUserStore();
 const fileList = ref([])
-const uploading = ref(false)
+
 
 const beforeUpload = (file) => {
     fileList.value = [...fileList.value, file]
@@ -87,15 +87,10 @@ const handleChange = ({ file, fileList }) => {
 
 const onFinish = async () => {
     try {
-        console.log(fileList.value[0])
-        await userStore.updateUser(userStore.userData.displayName);
-        message.success("Usuario Actualizado correctamente!")
-        if (fileList.value[0]) {
-            await userStore.updateImg(fileList.value[0]);
-            fileList.value = []
-            message.success("Foto Actualizada correctamente!")
-        }
 
+        await userStore.updateUser(userStore.userData.displayName, fileList.value[0]);
+        message.success("Usuario Actualizado correctamente!")
+        fileList.value = []
     } catch (error) {
         message.error(error.message)
     }
