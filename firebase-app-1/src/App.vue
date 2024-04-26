@@ -1,8 +1,7 @@
 <template>
 
-  <a-layout>
-    <a-layout-header v-if="!userStore.loadingSession">
-
+  <a-layout class="layout" v-if="!userStore.loadingSession">
+    <a-layout-header>
       <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }" v-model:selectedKeys="selectedKeys">
         <a-menu-item v-if="userStore.userData" key="home">
           <router-link to="/">Home</router-link>
@@ -21,17 +20,19 @@
         </a-menu-item>
       </a-menu>
     </a-layout-header>
+
+
     <a-layout-content style="padding: 0 50px;">
       <div class="container">
-        <div v-if="userStore.loadingSession">Loading Session....</div>
+
         <router-view></router-view>
       </div>
-      <a-layout-footer>
-
-      </a-layout-footer>
     </a-layout-content>
-
+    <a-layout-footer style="text-align: center">
+      Ant Design ©2018 Created by Ant UED
+    </a-layout-footer>
   </a-layout>
+  <div v-if="userStore.loadingSession">Loading Session....</div>
 </template>
 
 <script setup>
@@ -49,12 +50,17 @@ watch(() => route.name, () => { selectedKeys.value = [route.name] })
 </script>
 <style>
 .container {
-  background: #fff;
+  background-color: #fff;
   padding: 24px;
   min-height: calc(100vh - 64px - 48px);
 }
 
 .text-center {
   text-align: center;
+}
+
+
+body {
+  margin: 0;
 }
 </style>

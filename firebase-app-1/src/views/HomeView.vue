@@ -5,43 +5,28 @@
 
         <add-form></add-form>
 
-
-
-
         <div v-if="datatabaseStore.loadingDoc">
             Loading doc...
         </div>
 
-        <div style="background: #ececec; padding: 30px">
-            <a-row :gutter="24">
-                <a-col :md="{ span: '12' }" :xs="{ span: '24' }" v-for="item of datatabaseStore.documents"
-                    :key="item.id">
-                    <a-space direction="vertical" style="width: 100%">
-                        <a-card :title="item.short" :bordered="false">
-                            <template #extra>
-                                <a-space>
-                                    <a-button type="primary"
-                                        @click="router.push(`/editar/${item.id}`)">Editar</a-button>
-                                    <a-popconfirm title="Estas seguro que quieres eliminar la url?" ok-text="Si"
-                                        cancel-text="No" @confirm="confirm(item.id)" @cancel="cancel">
-                                        <a-button type="primary" danger>Eliminar</a-button>
-                                    </a-popconfirm>
+        <a-space direction="vertical" style="width: 100%" v-if="!datatabaseStore.loadingDoc">
+            <a-card v-for="item of datatabaseStore.documents" :key="item.id" :title="item.short">
+                <template #extra>
+                    <a-space>
+                        <a-button type="primary" @click="router.push(`/editar/${item.id}`)">Editar</a-button>
+                        <a-popconfirm title="Estas seguro que quieres eliminar la url?" ok-text="Si" cancel-text="No"
+                            @confirm="confirm(item.id)" @cancel="cancel">
+                            <a-button type="primary" danger>Eliminar</a-button>
+                        </a-popconfirm>
 
-                                </a-space>
-                            </template>
-                            <p>
-                                {{ item.name }} <br>
-                            </p>
-
-                        </a-card>
                     </a-space>
+                </template>
+                <p>
+                    {{ item.name }} <br>
+                </p>
 
-                </a-col>
-            </a-row>
-        </div>
-
-
-
+            </a-card>
+        </a-space>
     </div>
 </template>
 
