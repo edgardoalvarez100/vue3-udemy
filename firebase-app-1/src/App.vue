@@ -53,4 +53,8 @@ watch(() => route.name, () => { selectedKeys.value = [route.name] })
   padding: 24px;
   min-height: calc(100vh - 64px - 48px);
 }
+
+.text-center {
+  text-align: center;
+}
 </style>

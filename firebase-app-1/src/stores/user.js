@@ -8,9 +8,10 @@ import {
 
 import router from "../router/";
 import { defineStore } from "pinia";
-import { auth, db } from "../firebaseConfig";
+import { auth, db, storage } from "../firebaseConfig";
 import { useDatabaseStore } from "./database";
 import { setDoc, getDoc, doc } from "firebase/firestore/lite";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -105,6 +106,17 @@ export const useUserStore = defineStore("userStore", {
           (e) => reject(e)
         );
       });
+    },
+    async updateImg(imagen) {
+      try {
+        const storageRef = ref(storage, `${this.userData.uid}/perfil`);
+        await uploadBytes(storageRef, imagen.originFileObj);
+        const url = await getDownloadURL(storageRef);
+        await updateProfile(auth.currentUser, { photoURL: url });
+        this.setUser(auth.currentUser);
+      } catch (error) {
+        throw new Error(error);
+      }
     },
     async updateUser(displayName) {
       try {
