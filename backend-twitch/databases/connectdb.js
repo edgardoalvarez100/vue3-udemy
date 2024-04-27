@@ -1,3 +1,8 @@
 import mongoose from "mongoose";
 
-mongoose.connect(process.env.MONGODB_CN);
+try {
+  await mongoose.connect(process.env.MONGODB_CN);
+  console.log("connect DB OK ❤️");
+} catch (error) {
+  console.log("Error de conexion a mongo : " + error);
+}

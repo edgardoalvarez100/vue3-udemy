@@ -1,9 +1,12 @@
 import "dotenv/config";
+import "./databases/connectdb.js";
 import express from "express";
-import bodyParser from "body-parser";
+
+import router from "./routers/auth.route.js";
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
+app.use("/api/v1", router);
 
 app.get("/", (req, res) => {
   res.json({ ok: true });
@@ -12,5 +15,5 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log("servidor corriendo http://localhost:5000");
+  console.log("servidor corriendo http://localhost:" + PORT);
 });
