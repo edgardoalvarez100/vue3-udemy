@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 
@@ -8,6 +9,8 @@ app.get("/", (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(5000, () => {
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
   console.log("servidor corriendo http://localhost:5000");
 });
